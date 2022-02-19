@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diseñador Freelancer</title>
+    <link rel="preload" href="css/normalize.css" as="style"> <!--Para que el sitio web se comporte mas rapido-->
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Krub:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/tailwind.min.css">
+    <link rel="preload" href="css/styles.css" as="style">
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h1 class="titulo">PCA - SENA <span>Freelancer</h1></span></h1>
+    </header>
+    <!--configuracion de la barra de navegacion-->
+    <div class="nav-bg">
+        <nav class="navegacion-principal contenedor">
+            <a href="index.html">Inicio</a>
+            <a href="#">Sobre Mi</a>
+            <a href="#">Clientes</a>
+            <a href="contactos.html">Contactos</a>
+        </nav>
+    </div>
+    <div id="resultados">
+        <h2>Lista de Contactos</h2>
+        <div class="formulario">
+            <!-- Listado Clientes  -->
+            <main class="md:w-3/5  xl:w-4/5 px-5 py-10 bg-gray-200">
+                <div class="flex flex-col mt-100">
+                    <div class="py-2 overflow-x-auto">
+                        <div class="align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg border-b border-gray-200">
+                            <table class="min-w-full">
+                                <thead class="bg-gray-100 ">
+                                    <tr>
+                                        <th id="nombre" class="px-6 py-3 border-b border-gray-200  text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
+                                                Nombre Cliente
+                                        </th>
+                                        <th id="telefono" class="px-6 py-3 border-b border-gray-200  text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
+                                                Teléfono
+                                        </th>
+                                        <th id="correo" class="px-6 py-3 border-b border-gray-200  text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
+                                                Correo
+                                        </th>
+                                        <th id="mensaje" class="px-6 py-3 border-b border-gray-200  text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
+                                                Mensaje
+                                        </th>
+
+                                        <th id="acciones" class="px-6 py-3 border-b border-gray-200  text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
+                                            Acciones
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="listado-contactos" class="bg-white"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>  
+        </div>
+    </div>
+    
+
+    <footer class="fooster py-6">
+        <p>Todos los derechos reservados. Ivan Castro Ruiz Freelancer</p>
+    </footer>
+    <script src="./js/index.js" type="module"></script>
+    <script src="./js/funciones/funciones.js" type="module"></script>
+</body>
+</html>

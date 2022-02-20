@@ -1,5 +1,5 @@
 import { 
-    formulario
+    formulario,
 } from "../index.js";
 import { datos } from "../data/contactos.js";
 // Contacto se exporta de index por que lo obtenemos de localStorage
@@ -9,20 +9,20 @@ export const validarFormulario = (e) => {
     // Destruturing de Objetos
     const { nombre, telefono, correo, mensaje } = datos; 
     if(!nombre || !telefono || !correo || !mensaje){
-        mostrarAlerta("Todos los campos son obligatorios", true);
+        mostrarAlerta(formulario, "Todos los campos son obligatorios", true);
         return;
     }
      // Generar un ID único
     let id = generarId();
     contactos.push({id, nombre, telefono, correo, mensaje});  
     sincronizarStorage(contactos);  
-    mostrarAlerta("Enviando la informacion a la base de datos");
+    mostrarAlerta(formulario, "Enviando la informacion a la base de datos");
     formulario.reset();
     resetDatos(datos);
 };
 export const leerTexto = (e) => {
     datos[e.target.id] = e.target.value;
-    console.log(datos);
+    //console.log(datos);
 };
 export const listarContactos = (contactos) =>{
     limpiarHTML();
@@ -56,12 +56,14 @@ export const listarContactos = (contactos) =>{
     addEventListenerEliminar();   
     addEventListenerEditar();   
 };
-const mostrarAlerta = (mensaje, error = null) => {
+const mostrarAlerta = (formulario, mensaje, error = null) => {
     const alerta = document.createElement('p');
     alerta.textContent = mensaje;
     if(error){
+        console.log("Error")
         alerta.classList.add('error');
     }else{
+        console.log("correcto")
         alerta.classList.add('correcto');
     };
     formulario.appendChild(alerta);
@@ -85,6 +87,18 @@ const generarId = () =>{
     const fecha = Date.now().toString(36);
     return randon + fecha;
 };
+const addEventListenerEliminar =  () => {
+    const eliminarBtn = document.querySelectorAll("#eliminar");
+    eliminarBtn.forEach((contacto) =>{
+        contacto.addEventListener("click",eliminarContacto);
+    });
+};
+const addEventListenerEditar = () =>{
+    const editarBtn = document.querySelectorAll("#editar");
+    editarBtn.forEach((contacto) =>{
+        contacto.addEventListener("click",editarContacto);
+    });    
+};
 const eliminarContacto = (e) => {
     const confir = confirm("¿Quiere eliminar el Contacto?");
     const id = e.target.dataset.contacto;
@@ -98,14 +112,18 @@ const eliminarContacto = (e) => {
 };
 const editarContacto = (e) => {
     e.preventDefault();
-    const confir = confirm("¿Quiere eliminar el Contacto?");
-    
+    const confir = confirm("¿Quiere editar el Contacto?");
     if(confir){
         limpiarHTML('#resultados');
         edicionHTML('#resultados');
+        const formularioEdicion = document.querySelector('.formulario');
+        const edicionTexto = (e) => {
+            contactoEditar[e.target.id] = e.target.value;
+        };
+
         const id = e.target.dataset.contacto;
         const contactoEditar = contactos.find((contacto => contacto.id === id));
-
+        console.log(contactoEditar);
         const nombre = document.querySelector('.nombre');
         nombre.value = contactoEditar.nombre;
         const telefono = document.querySelector('#telefono');
@@ -114,42 +132,36 @@ const editarContacto = (e) => {
         correo.value = contactoEditar.correo;
         const mensaje = document.querySelector('#mensaje');
         mensaje.value = contactoEditar.mensaje;
-        const editarBtn = document.querySelector('#editar');
-        console.log(editarBtn);
+        const editarForm = document.querySelector('.formulario');
         
-        editarBtn.addEventListener('submit', (e)=>{
-            e.preventDefault();
+         // Activar el evento input para campos nombre, telefono, correo, mensaje
+        if(nombre && telefono && correo && mensaje){
+            nombre.addEventListener('input', edicionTexto);
+            telefono.addEventListener('input', edicionTexto);
+            correo.addEventListener('input', edicionTexto);
+            mensaje.addEventListener('input', edicionTexto);
+        };
+        // Asignar el escuchador de evento al boton guardar la edicion del contactos
+        editarForm.addEventListener('submit', (evento)=>{
+            evento.preventDefault();
             // Destruturing de Objetos
-            const { nombre, telefono, correo, mensaje } = datos; 
-            console.log(datos);
+            const { id, nombre, telefono, correo, mensaje } = contactoEditar; 
             console.log(nombre, telefono, correo, mensaje);
+            console.log(formulario);
             if(!nombre || !telefono || !correo || !mensaje){
-                mostrarAlerta("Todos los campos son obligatorios", true);
+                mostrarAlerta(formularioEdicion, "Todos los campos son obligatorios", true);
                 return;
             }
-            /*// Generar un ID único
-            let id = generarId();
-            contactos.push({id, nombre, telefono, correo, mensaje});  
+            mostrarAlerta(formularioEdicion, "Enviando la informacion a la base de datos");
+            // Lo eliminamos
+            sincronizarStorage(contactos.filter( contacto => contacto.id !== id ));
+            // Lo agregamos nuevamente con la edicion
+            //contactos.push({id, nombre, telefono, correo, mensaje});  
             sincronizarStorage(contactos);  
-            mostrarAlerta("Enviando la informacion a la base de datos");
-            formulario.reset();
             resetDatos(datos);
-            //console.log(contactos);*/
         });
-    }
+    };
     return; 
-};
-const addEventListenerEliminar =  () => {
-    const eliminarBtn = document.querySelectorAll("#eliminar");
-    eliminarBtn.forEach((contacto) =>{
-        contacto.addEventListener("click",eliminarContacto);
-    });
-};
-const addEventListenerEditar = () =>{
-    const editarBtn = document.querySelectorAll("#editar");
-    editarBtn.forEach((contacto) =>{
-        contacto.addEventListener("click",editarContacto);
-    });    
 };
 const limpiarHTML = (listado) => {
     const listadoContactos = document.querySelector(`${listado}`);
@@ -161,17 +173,16 @@ const limpiarHTML = (listado) => {
 };
 const edicionHTML = (listado) => {
     const edicionContactos = document.querySelector(`${listado}`);
-    console.log(edicionContactos);
     edicionContactos.innerHTML = `
+                            <main main-edicion class="contenedor sombra">
                                     <section>   
                                         <h2>Editar Contactos</h2>
 
                                         <form action="" 
-                                                method="POST"
                                                 class="formulario"
                                                 name="formRegistro"
                                             >
-                                            <fieldset>
+                                            <fieldset class="px-5 py-10">
                                                 <legend>Editar los campos requeridos</legend>
                                                 <div class="contenedor-campos">
                                                     <div class="campos">
@@ -197,5 +208,6 @@ const edicionHTML = (listado) => {
                                             </fieldset>
                                         </form>
                                     </section>
+                                </main>
     `;
 };
